@@ -45,6 +45,36 @@ class MagicGoogle():
             text = item('span.st').text()
             result['text'] = text
             yield result
+        
+    def get_page_file(self, url, language=None, num=None, start=0, pause=2):
+        """
+        Google search
+        :param query: Keyword
+        :param language: Language
+        :return: result
+        """
+        time.sleep(pause)
+        
+
+        # Add headers
+        headers = {'user-agent': self.get_random_user_agent()}
+        try:
+            requests.packages.urllib3.disable_warnings(requests.packages.urllib3.exceptions.InsecureRequestWarning)
+            r = requests.get(url=url,
+                             proxies=self.proxies,
+                             headers=headers,
+                             allow_redirects=False,
+                             verify=False,
+                             timeout=30)
+            LOGGER.info(url)
+            content = r.content
+            charset = cchardet.detect(content)
+            text = content.decode(charset['encoding'])
+            return content
+        except Exception as e:
+            LOGGER.exception(e)
+            return None
+
 
     def search_page(self, query, language=None, num=None, start=0, pause=2):
         """
